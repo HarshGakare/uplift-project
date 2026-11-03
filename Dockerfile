@@ -1,5 +1,5 @@
 # Match this to the Python version you used locally (printed by src/print_versions.py).
-ARG PYTHON_VERSION=3.14.4
+ARG PYTHON_VERSION=3.14
 FROM python:${PYTHON_VERSION}-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
