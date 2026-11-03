@@ -29,11 +29,14 @@ COPY data/processed/feature_cols.json ./data/processed/feature_cols.json
 RUN useradd --create-home appuser
 USER appuser
 
+# Hosts like Render set PORT; locally and in CI it defaults to 8000
+ENV PORT=8000
 EXPOSE 8000
 
-# Docker will mark the container "unhealthy" if /health stops answering
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')" || exit 1
+# Docker marks the container "unhealthy" if /health stops answering
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s \
+    CMD python -c "import os, urllib.request; urllib.request.urlopen('http://127.0.0.1:%s/health' % os.environ.get('PORT', '8000'))" || exit 1
 
-# 0.0.0.0 means "accept connections from outside the container"
-CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Shell form on purpose, so ${PORT} is replaced by its value.
+# 0.0.0.0 means "accept connections from outside the container".
+CMD uvicorn api.main:app --host 0.0.0.0 --port ${PORT}
