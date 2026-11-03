@@ -22,6 +22,7 @@ COPY src ./src
 COPY api ./api
 COPY models ./models
 COPY outputs/policy_config.json ./outputs/policy_config.json
+COPY outputs/reference_stats.json ./outputs/reference_stats.json
 COPY data/processed/feature_cols.json ./data/processed/feature_cols.json
 
 # Run as a normal user instead of root (safer if the service is ever compromised)

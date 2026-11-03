@@ -17,11 +17,14 @@ from fastapi import FastAPI, HTTPException, Query
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.append(str(ROOT / "src"))
 
+from drift import MIN_CUSTOMERS, compare  # noqa: E402
 from features import build_features  # noqa: E402
 from policy import experimental_plan, shrink_scores, simple_recommendation  # noqa: E402
 
 from api.schemas import (  # noqa: E402
     CustomerScore,
+    DriftRequest,
+    DriftResponse,
     GuideResponse,
     ScoreRequest,
     ScoreResponse,
@@ -39,6 +42,13 @@ SCORE_NOTE = (
     "targeting did not beat the simple plan with confidence. Scores here are shrunk toward the "
     "average effect. Use them to prepare an A/B test, not as proven advice."
 )
+DRIFT_NOTE = (
+    "PSI compares the mix of new customers with the training customers: below 0.10 stable, "
+    "0.10 to 0.25 moderate shift, above 0.25 major shift (rules of thumb). Input drift does "
+    "not prove the model got worse, and it cannot show a change in how customers respond to "
+    "the email; only a new experiment can. If the shift is major, treat /score output with "
+    "extra caution and consider a fresh A/B test."
+)
 
 
 @asynccontextmanager
@@ -47,9 +57,14 @@ async def lifespan(app: FastAPI):
     cfg_path = ROOT / "outputs" / "policy_config.json"
     if not cfg_path.exists():
         raise RuntimeError("outputs/policy_config.json not found. Run src/step10_cost_and_shrinkage.py first.")
+    ref_path = ROOT / "outputs" / "reference_stats.json"
+    if not ref_path.exists():
+        raise RuntimeError("outputs/reference_stats.json not found. Run src/make_reference.py first.")
 
     with open(cfg_path) as f:
         cfg = json.load(f)
+    with open(ref_path) as f:
+        state["reference"] = json.load(f)
     with open(ROOT / "data" / "processed" / "feature_cols.json") as f:
         feature_cols = json.load(f)
 
@@ -62,8 +77,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Email Decision API",
-    version="1.0.0",
-    description="Break-even guidance and experimental customer-level uplift scores for an email campaign.",
+    version="1.1.0",
+    description="Break-even guidance, experimental customer-level uplift scores, and a data-drift check for an email campaign.",
     lifespan=lifespan,
 )
 
@@ -133,4 +148,21 @@ def score(req: ScoreRequest):
         results=results,
         counts=counts,
         note=SCORE_NOTE,
+    )
+
+
+@app.post("/drift", response_model=DriftResponse)
+def drift(req: DriftRequest):
+    if len(req.customers) < MIN_CUSTOMERS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Send at least {MIN_CUSTOMERS} customers: PSI is too noisy on smaller samples.",
+        )
+    raw = pd.DataFrame([c.model_dump() for c in req.customers])
+    result = compare(raw, state["reference"])
+    return DriftResponse(
+        n_customers=len(raw),
+        overall_status=result["overall_status"],
+        features=result["features"],
+        note=DRIFT_NOTE,
     )

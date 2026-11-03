@@ -1,4 +1,3 @@
-
 """Describes what valid input and output look like (Pydantic models)."""
 from typing import Dict, List, Literal, Optional
 
@@ -65,4 +64,21 @@ class GuideResponse(BaseModel):
     near_break_even: bool
     estimated_profit_per_100k_mens_to_all: float
     estimated_profit_per_100k_womens_to_all: float
+    note: str
+
+
+class DriftRequest(BaseModel):
+    customers: List[Customer] = Field(..., min_length=1, max_length=20000)
+
+
+class FeatureDrift(BaseModel):
+    feature: str
+    psi: float
+    status: str
+
+
+class DriftResponse(BaseModel):
+    n_customers: int
+    overall_status: str
+    features: List[FeatureDrift]
     note: str
