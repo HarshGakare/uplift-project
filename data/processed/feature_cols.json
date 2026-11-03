@@ -1,0 +1,17 @@
+[
+  "recency",
+  "history",
+  "log_history",
+  "history_segment_num",
+  "spend_per_recency",
+  "mens",
+  "womens",
+  "buys_both",
+  "newbie",
+  "zip_code_Rural",
+  "zip_code_Suburban",
+  "zip_code_Urban",
+  "channel_Multichannel",
+  "channel_Phone",
+  "channel_Web"
+]

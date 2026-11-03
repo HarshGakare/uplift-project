@@ -1,0 +1,20 @@
+{
+  "t_learner": {
+    "n_estimators": 194,
+    "learning_rate": 0.07904225538370878,
+    "num_leaves": 13,
+    "min_child_samples": 412,
+    "subsample": 0.6585673101409384,
+    "colsample_bytree": 0.9839913017072154,
+    "reg_lambda": 11.928522891796183
+  },
+  "s_learner": {
+    "n_estimators": 110,
+    "learning_rate": 0.016759058374968962,
+    "num_leaves": 5,
+    "min_child_samples": 149,
+    "subsample": 0.725606351288928,
+    "colsample_bytree": 0.6848386072731126,
+    "reg_lambda": 8.17349965209934
+  }
+}

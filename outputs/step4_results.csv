@@ -1,0 +1,5 @@
+method,test_qini,range_90pct,extra_buyers_top20,random_top20,extra_buyers_top50,random_top50
+Heuristic (past spend),2.96,-5.7 to 10.8,12.2,12.6,41.1,31.4
+T-learner (Step 3 params),7.27,-1.6 to 15.8,18.9,12.6,40.1,31.4
+T-learner (tuned),10.34,0.9 to 19.1,19.9,12.6,43.1,31.4
+S-learner (tuned),5.75,-4.1 to 14.8,14.7,12.6,41.2,31.4

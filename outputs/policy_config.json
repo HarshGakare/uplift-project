@@ -1,0 +1,25 @@
+{
+  "lambda": 0.5,
+  "global_uplift": {
+    "mens": 0.006805006519615695,
+    "womens": 0.003111057511085258
+  },
+  "score_centre": {
+    "mens": 0.006703242673607813,
+    "womens": 0.0030640063313728534
+  },
+  "extra_buyers_per_100k": {
+    "mens": 681,
+    "womens": 311
+  },
+  "model_files": {
+    "none": "models/final_arm_none.joblib",
+    "mens": "models/final_arm_mens.joblib",
+    "womens": "models/final_arm_womens.joblib"
+  },
+  "defaults": {
+    "profit_margin": 0.3,
+    "cost_per_email": 0.1,
+    "avg_spend_of_buyers": 116.98
+  }
+}

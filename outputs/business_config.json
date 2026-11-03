@@ -1,0 +1,12 @@
+{
+  "score_column": "score_t_learner_tuned",
+  "profit_margin": 0.3,
+  "cost_per_email": 0.1,
+  "avg_spend_of_buyers": 116.98,
+  "value_per_buyer": 35.09,
+  "threshold": 0.00285,
+  "model_files": [
+    "models/tuned_model_treated.joblib",
+    "models/tuned_model_control.joblib"
+  ]
+}
